@@ -1,0 +1,84 @@
+{
+  "tools": [
+    {
+      "type": "function",
+      "function": {
+        "name": "consultar_ativo",
+        "description": "Retorna a ficha técnica do ativo (tipo, modelo, instalação, criticidade) a partir da TAG.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": { "type": "string", "description": "TAG única do equipamento." }
+          },
+          "required": ["tag"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "consultar_historico_falhas",
+        "description": "Retorna o histórico de falhas do ativo para identificar reincidências.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": { "type": "string", "description": "TAG do equipamento." },
+            "janela_meses": { "type": "integer", "description": "Meses de histórico para busca.", "default": 12 },
+            "tipo_falha": { "type": "string", "description": "Filtro opcional por causa da falha." }
+          },
+          "required": ["tag"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "abrir_ordem_servico",
+        "description": "Gera uma Ordem de Serviço (OS) simulada após triagem do alarme.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": { "type": "string", "description": "TAG do equipamento." },
+            "tipo_intervencao": { "type": "string", "enum": ["corretiva", "preventiva", "inspecao", "cbm"], "description": "Tipo de manutenção." },
+            "prioridade": { "type": "string", "enum": ["critica", "alta", "media", "baixa"], "description": "Prioridade de atendimento." },
+            "descricao": { "type": "string", "description": "Resumo da ação sugerida." },
+            "janela_inicio": { "type": "string", "description": "Início sugerido (ISO 8601)." },
+            "janela_fim": { "type": "string", "description": "Fim sugerido (ISO 8601)." }
+          },
+          "required": ["tag", "tipo_intervencao", "prioridade", "descricao"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "consultar_procedimento",
+        "description": "Retorna o POP e requisitos de segurança aplicáveis (NR-10/NR-35).",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tipo_ativo": { "type": "string", "enum": ["CFTV", "PMV", "Callbox", "SAT", "SCA", "Laco_Indutivo", "Portico_Free_Flow", "HS_WIM"], "description": "Categoria do ativo." },
+            "tipo_intervencao": { "type": "string", "enum": ["corretiva", "preventiva", "inspecao", "cbm"], "description": "Natureza da ação." }
+          },
+          "required": ["tipo_ativo", "tipo_intervencao"]
+        }
+      }
+    },
+    {
+      "type": "function",
+      "function": {
+        "name": "calcular_metricas_confiabilidade",
+        "description": "Calcula métricas de confiabilidade (MTBF, taxa de falha, probabilidade R(t)).",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "tag": { "type": "string", "description": "TAG do equipamento." },
+            "periodo_meses": { "type": "integer", "description": "Janela em meses para análise." },
+            "tempo_operacao_horas": { "type": "integer", "description": "Tempo em horas para prever R(t)." }
+          },
+          "required": ["tag", "periodo_meses", "tempo_operacao_horas"]
+        }
+      }
+    }
+  ]
+}
